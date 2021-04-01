@@ -10,9 +10,9 @@ namespace BattleShips.Core.Services
 {
     public class MapService : IMapService
     {
-        public Map CreateMap(int rows, int columns)
+        public Map CreateMap(int columns, int rows)
         {
-            throw new NotImplementedException();
+            return new Map(columns, rows);
         }
 
         public string DrawMap(Map map)

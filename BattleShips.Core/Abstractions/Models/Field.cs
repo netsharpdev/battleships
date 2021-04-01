@@ -4,7 +4,5 @@
     {
         public bool IsShoot { get; set; }
         public Ship Ship { get; set; }
-        public int Column { get; set; }
-        public int Row { get; set; }
     }
 }

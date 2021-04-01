@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -9,21 +10,39 @@ namespace BattleShips.Core.Utilities
 {
     internal static class ColumnUtility
     {
-        internal static int GetColumnNumber(string columnLetter) =>
-            columnLetter switch
+        private static Dictionary<string, int> columnNumberMapping = new Dictionary<string, int>();
+
+        private static IReadOnlyList<string> availableLetters = new ImmutableArray<string>
+            {"A", "B", "C", "D", "E", "F", "G", "H", "I"};
+        static ColumnUtility()
+        {
+            var index = 0;
+            foreach (var availableLetter in availableLetters)
             {
-                "A" => 1,
-                "B" => 2,
-                "C" => 3,
-                "D" => 4,
-                "E" => 5,
-                "F" => 6,
-                "G" => 7,
-                "H" => 8,
-                "I" => 9,
-                "J" => 10,
-                _ => throw new ArgumentOutOfRangeException()
-            };
+                columnNumberMapping.Add(availableLetter, index);
+                index++;
+            }
+        }
+
+        internal static int GetColumnNumber(string columnLetter)
+        {
+            if (!availableLetters.Contains(columnLetter))
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            return columnNumberMapping[columnLetter];
+        }
+
+        internal static string GetColumnLetter(int column)
+        {
+            if (column < 0 || column >= columnNumberMapping.Count)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            return columnNumberMapping.First(x => x.Value == column).Key;
+        }
     }
 
 }

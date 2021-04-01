@@ -21,10 +21,10 @@ namespace BattleShips.Tests.Unit
             var rows = 10;
             var columns = 10;
             var expectedFieldsNumber = rows * columns;
-            var map = mapService.CreateMap(rows, columns);
+            var map = mapService.CreateMap(columns, rows);
 
             map.Fields.Should().NotBeNull();
-            map.Fields.Length.Should().Be(expectedFieldsNumber);
+            map.Fields.SelectMany(c=>c).Count().Should().Be(expectedFieldsNumber);
         }
         [Test]
         public void CreateMap_WHEN_InvokedWithPositiveParameters_THEN_ReturnMapFieldsWithDefaultState()
@@ -32,19 +32,19 @@ namespace BattleShips.Tests.Unit
             IMapService mapService = new MapService();
             var rows = 10;
             var columns = 10;
-            var map = mapService.CreateMap(rows, columns);
+            var map = mapService.CreateMap(columns, rows);
 
             map.Fields.Should().NotBeNull();
-            map.Fields.Select(c => c.IsShoot).Should().AllBeEquivalentTo(false);
-            map.Fields.Select(c => c.Ship).Should().BeEmpty();
+            map.Fields.SelectMany(c => c).Select(c=>c.IsShoot).Should().AllBeEquivalentTo(false);
+            map.Fields.SelectMany(c=>c).Select(c => c.Ship).Should().AllBeEquivalentTo((Ship)null);
         }
-        [Test]
-        public void CreateMap_WHEN_InvokedWithAtLeastOneNegativeParameter_THEN_ThrowArgumentOutOfRangeException()
+        [TestCase(10, -1)]
+        [TestCase(0, 2)]
+        [TestCase(-1, -2)]
+        public void CreateMap_WHEN_InvokedWithAtLeastOneNegativeOrZeroParameter_THEN_ThrowArgumentOutOfRangeException(int columns, int rows)
         {
             IMapService mapService = new MapService();
-            var rows = -10;
-            var columns = 10;
-            var action = new Func<Map>(()=> mapService.CreateMap(rows, columns));
+            var action = new Func<Map>(()=> mapService.CreateMap(columns, rows));
 
             action.Should().ThrowExactly<ArgumentOutOfRangeException>();
         }
