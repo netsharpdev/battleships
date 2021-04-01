@@ -21,7 +21,7 @@ namespace BattleShips.Tests.Unit
             var rows = 10;
             var columns = 10;
             var expectedFieldsNumber = rows * columns;
-            var map = mapService.CreateMap(columns, rows);
+            var map = mapService.CreateMap(rows, columns);
 
             map.Fields.Should().NotBeNull();
             map.Fields.SelectMany(c=>c).Count().Should().Be(expectedFieldsNumber);
@@ -32,7 +32,7 @@ namespace BattleShips.Tests.Unit
             IMapService mapService = new MapService();
             var rows = 10;
             var columns = 10;
-            var map = mapService.CreateMap(columns, rows);
+            var map = mapService.CreateMap(rows, columns);
 
             map.Fields.Should().NotBeNull();
             map.Fields.SelectMany(c => c).Select(c=>c.IsShoot).Should().AllBeEquivalentTo(false);
@@ -44,9 +44,45 @@ namespace BattleShips.Tests.Unit
         public void CreateMap_WHEN_InvokedWithAtLeastOneNegativeOrZeroParameter_THEN_ThrowArgumentOutOfRangeException(int columns, int rows)
         {
             IMapService mapService = new MapService();
-            var action = new Func<Map>(()=> mapService.CreateMap(columns, rows));
+            var action = new Func<Map>(()=> mapService.CreateMap(rows, columns));
 
             action.Should().ThrowExactly<ArgumentOutOfRangeException>();
+        }
+
+        [Test]
+        public void DrawMap_WHEN_InvokedWithMapWithoutShoots_THEN_ReturnMapConvertedToStringWithProperChars()
+        {
+            IMapService mapService = new MapService();
+            var map = mapService.CreateMap(10, 10);
+            var textMap = mapService.DrawMap(map);
+
+            textMap.Length.Should().BePositive();
+            textMap.Should().NotContain("x");
+            textMap.Should().NotContain("o");
+            textMap.Should().Contain("+");
+
+        }
+        [Test]
+        public void DrawMap_WHEN_InvokedWithMapWitShoots_THEN_ReturnMapConvertedToStringWithProperChars()
+        {
+            IMapService mapService = new MapService();
+            var map = mapService.CreateMap(10, 10);
+            map.Fields[1][1].IsShoot = true;
+            var textMap = mapService.DrawMap(map);
+
+            textMap.Length.Should().BePositive();
+            textMap.Should().NotContain("x");
+            textMap.Should().NotContain("o");
+            textMap.Should().Contain("+");
+
+        }
+        [Test]
+        public void DrawMap_WHEN_InvokedWithNull_THEN_ThrowArgumentNullException()
+        {
+            IMapService mapService = new MapService();
+            var action = new Func<string>(()=> mapService.DrawMap(null));
+            action.Should().ThrowExactly<ArgumentNullException>();
+
         }
 
 

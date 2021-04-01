@@ -5,18 +5,18 @@ namespace BattleShips.Core.Abstractions.Models
 {
     public class Map
     {
-        public Map(int columns, int rows)
+        public Map(int rows, int columns)
         {
             if (rows < 1 || columns < 1)
             {
                 throw new ArgumentOutOfRangeException("Minimum map size is 1x1");
             }
 
-            Fields = new Field[columns][];
-            for (int i = 0; i < columns; i++)
+            Fields = new Field[rows][];
+            for (int i = 0; i < rows; i++)
             {
-                Fields[i] = new Field[rows];
-                for (int j = 0; j < rows; j++)
+                Fields[i] = new Field[columns];
+                for (int j = 0; j < columns; j++)
                 {
                     Fields[i][j] = new Field();
                 }

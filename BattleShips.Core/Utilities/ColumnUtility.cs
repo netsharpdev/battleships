@@ -12,8 +12,8 @@ namespace BattleShips.Core.Utilities
     {
         private static Dictionary<string, int> columnNumberMapping = new Dictionary<string, int>();
 
-        private static IReadOnlyList<string> availableLetters = new ImmutableArray<string>
-            {"A", "B", "C", "D", "E", "F", "G", "H", "I"};
+        private static IReadOnlyList<string> availableLetters = new []
+            {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
         static ColumnUtility()
         {
             var index = 0;
@@ -36,7 +36,7 @@ namespace BattleShips.Core.Utilities
 
         internal static string GetColumnLetter(int column)
         {
-            if (column < 0 || column >= columnNumberMapping.Count)
+            if (column < 0 || column > columnNumberMapping.Count)
             {
                 throw new ArgumentOutOfRangeException();
             }
