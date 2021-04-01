@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BattleShips.Models
+namespace BattleShips.Core.Factories
 {
-    public class Ship
+    public class BattleServiceFactory
     {
+        
     }
 }

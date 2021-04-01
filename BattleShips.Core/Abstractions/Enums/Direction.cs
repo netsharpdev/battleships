@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BattleShips.Models
+namespace BattleShips.Core.Abstractions.Enums
 {
-    public enum ShootStatus
+    public enum Direction
     {
-        Missed,
-        Hit,
-        Destroyed
+        Top,
+        Bottom,
+        Left,
+        Right
     }
 }
