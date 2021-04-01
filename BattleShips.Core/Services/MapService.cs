@@ -36,7 +36,7 @@ namespace BattleShips.Core.Services
         private static void DrawRow(Field[][] fields, int row, StringBuilder stringBuilder)
         {
             var rowBuilder = new StringBuilder();
-            rowBuilder.Append(row + 1 + "_");
+            rowBuilder.Append(row + 1 + row > 9 ? string.Empty : "_");
             for (int column = 0; column < fields[row].Length; column++)
             {
                 DrawColumnContent(fields[row][column], rowBuilder);
