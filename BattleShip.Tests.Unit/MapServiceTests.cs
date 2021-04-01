@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BattleShips.Core.Abstractions.Models;
 using BattleShips.Core.Abstractions.Services;
+using BattleShips.Core.Repositories;
 using BattleShips.Core.Services;
 using FluentAssertions;
 using NUnit.Framework;
@@ -17,7 +18,8 @@ namespace BattleShips.Tests.Unit
         [Test]
         public void CreateMap_WHEN_InvokedWithPositiveParameters_THEN_ReturnMapWithRowsAndColumnsAsProvided()
         {
-            IMapService mapService = new MapService();
+            var mapRepository = new InMemoryMapRepository();
+            IMapService mapService = new MapService(mapRepository);
             var rows = 10;
             var columns = 10;
             var expectedFieldsNumber = rows * columns;
@@ -30,7 +32,8 @@ namespace BattleShips.Tests.Unit
         [Test]
         public void CreateMap_WHEN_InvokedWithPositiveParameters_THEN_ReturnMapFieldsWithDefaultState()
         {
-            IMapService mapService = new MapService();
+            var mapRepository = new InMemoryMapRepository();
+            IMapService mapService = new MapService(mapRepository);
             var rows = 10;
             var columns = 10;
             var map = mapService.CreateMap(rows, columns);
@@ -47,7 +50,8 @@ namespace BattleShips.Tests.Unit
             int columns,
             int rows)
         {
-            IMapService mapService = new MapService();
+            var mapRepository = new InMemoryMapRepository();
+            IMapService mapService = new MapService(mapRepository);
             var action = new Func<Map>(() => mapService.CreateMap(rows, columns));
 
             action.Should().ThrowExactly<ArgumentOutOfRangeException>();
