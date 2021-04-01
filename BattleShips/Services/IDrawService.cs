@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using BattleShips.Core.Abstractions.Models;
 
-namespace BattleShips.Core.Abstractions.Services
+namespace BattleShips.Services
 {
-    public interface IDrawService<T>
+    public interface IDrawService
     {
-        T DrawMap(Map map);
+        string DrawMap(Map map);
     }
 }
