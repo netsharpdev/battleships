@@ -8,6 +8,10 @@ namespace BattleShips.Core.Abstractions.Models
     {
         public Ship(int length)
         {
+            if (length > 5 || length < 4)
+            {
+                throw new ArgumentOutOfRangeException("Ship cannot be longer than 5 or shorter than 4");
+            }
             Length = length;
             Coordinates = new List<Coordinates>();
         }

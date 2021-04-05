@@ -134,10 +134,11 @@ namespace BattleShips.Core.Services
 
             var random = new Random();
             var result = new PlacingShipResult();
-            while (!result.Success)
+            while (result.Ship == null)
             {
                 var row = random.Next(0, map.Fields.Length - 1);
                 var column = random.Next(0, map.Fields[0].Length - 1);
+                ship.Direction = (Direction)random.Next(1, 4); 
                 result = PlaceShip(row, column, ship);
             }
 

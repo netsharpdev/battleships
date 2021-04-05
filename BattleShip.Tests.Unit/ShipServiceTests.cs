@@ -105,5 +105,32 @@ namespace BattleShips.Tests.Unit
             result.Success.Should().BeFalse();
             result.Error.Should().BeEquivalentTo("Ship cannot exceed map dimensions");
         }
+
+        [TestCase(4)]
+        [TestCase(5)]
+        public void
+            RandomlyPlaceShip_WHEN_Invoked_THEN_ReturnRandomlyPlacedShip(int length)
+        {
+            var mapRepoMock = new Mock<IMapRepository>();
+            var mapWithShips = new Map(10, 10);
+
+            mapWithShips.Fields[0][1].Ship = new Ship(4);
+            mapWithShips.Fields[0][2].Ship = new Ship(4);
+            mapWithShips.Fields[0][3].Ship = new Ship(4);
+            mapWithShips.Fields[0][4].Ship = new Ship(4);
+
+            mapWithShips.Fields[0][0].Ship = new Ship(4);
+            mapWithShips.Fields[1][0].Ship = new Ship(4);
+            mapWithShips.Fields[2][0].Ship = new Ship(4);
+            mapWithShips.Fields[3][0].Ship = new Ship(4);
+
+            mapRepoMock.SetupGet(c => c.Map).Returns(new Map(10, 10));
+            var shipService = new ShipService(mapRepoMock.Object);
+            var result = shipService.RandomlyPlaceShip(length);
+
+            result.Success.Should().BeTrue();
+            result.Ship.Should().NotBeNull();
+            result.Ship.Coordinates.Count.Should().Be(length);
+        }
     }
 }

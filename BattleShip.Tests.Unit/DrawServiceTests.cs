@@ -38,7 +38,7 @@ namespace BattleShips.Tests.Unit
 
             textMap.Length.Should().BePositive();
             textMap.Should().NotContain("x");
-            textMap.Should().NotContain("o");
+            textMap.Should().Contain("o");
             textMap.Should().Contain("+");
 
         }
