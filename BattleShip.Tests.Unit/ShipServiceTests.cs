@@ -1,28 +1,106 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
+using BattleShips.Core.Abstractions.Enums;
+using BattleShips.Core.Abstractions.Models;
+using BattleShips.Core.Abstractions.Repositories;
+using BattleShips.Core.Services;
+using FluentAssertions;
+using Moq;
+using NUnit.Framework;
 
 namespace BattleShips.Tests.Unit
 {
     public class ShipServiceTests
     {
+        [TestCase(0,0, 5, Direction.Bottom)]
+        [TestCase(4,9, 4, Direction.Top)]
+        [TestCase(9,4, 4, Direction.Top)]
         public void
-            PlaceShip_WHEN_InvokedWithTopOrBottomDirection_THEN_ReturnShipWithFieldsNextToEachOtherInSameColumn()
+            PlaceShip_WHEN_InvokedWithTopOrBottomDirection_THEN_ReturnShipWithFieldsNextToEachOtherInSameColumn(int row, int column, int shipLength, Direction direction)
         {
+            var mapRepoMock = new Mock<IMapRepository>();
+            mapRepoMock.SetupGet(c => c.Map).Returns(new Map(10, 10));
+            var shipService = new ShipService(mapRepoMock.Object);
+            var ship = new Ship(shipLength)
+            {
+                Direction = direction
+            };
+            var result = shipService.PlaceShip(row, column, ship);
 
+            result.Success.Should().BeTrue();
+            result.Error.Should().BeEmpty();
+            result.Ship.Coordinates.Length.Should().Be(shipLength);
+            result.Ship.Coordinates.Select(c=>c.Column).Should().AllBeEquivalentTo(column);
+            result.Ship.Coordinates.Select(c => c.Row).Should().OnlyHaveUniqueItems();
         }
+        [TestCase(1, 4, 5, Direction.Left)]
+        [TestCase(2, 5, 4, Direction.Right)]
+        [TestCase(5, 1, 4, Direction.Right)]
         public void
-            PlaceShip_WHEN_InvokedWithLeftOrRightDirection_THEN_ReturnShipWithFieldsNextToEachOtherInSameRow()
+            PlaceShip_WHEN_InvokedWithLeftOrRightDirection_THEN_ReturnShipWithFieldsNextToEachOtherInSameRow(int row, int column, int shipLength, Direction direction)
         {
+            var mapRepoMock = new Mock<IMapRepository>();
+            mapRepoMock.SetupGet(c => c.Map).Returns(new Map(10, 10));
+            var shipService = new ShipService(mapRepoMock.Object);
+            var ship = new Ship(shipLength)
+            {
+                Direction = direction
+            };
+            var result = shipService.PlaceShip(row, column, ship);
 
+            result.Success.Should().BeTrue();
+            result.Error.Should().BeEmpty();
+            result.Ship.Coordinates.Length.Should().Be(shipLength);
+            result.Ship.Coordinates.Select(c => c.Row).Should().AllBeEquivalentTo(row);
+            result.Ship.Coordinates.Select(c => c.Column).Should().OnlyHaveUniqueItems();
         }
-
+        [TestCase(1, 5, 5, Direction.Left)]
+        [TestCase(2, 4, 4, Direction.Right)]
+        [TestCase(5, 4, 4, Direction.Top)]
+        [TestCase(3, 4, 4, Direction.Bottom)]
         public void
-            PlaceShip_WHEN_InvokedAndCollisionWithBorderDetected_THEN_ReturnOutOfRangeException()
+            PlaceShip_WHEN_InvokedAndCollisionWithShipDetected_THEN_ReturnSuccessFalse(int row, int column, int shipLength, Direction direction)
         {
+            var mapRepoMock = new Mock<IMapRepository>();
+            var mapWithShips = new Map(10, 10);
 
+            mapWithShips.Fields[row][column+1].Ship = new Ship(4);
+            mapWithShips.Fields[row][column+2].Ship = new Ship(4);
+            mapWithShips.Fields[row][column+3].Ship = new Ship(4);
+            mapWithShips.Fields[row][column+4].Ship = new Ship(4);
+
+            mapWithShips.Fields[row+1][column].Ship = new Ship(4);
+            mapWithShips.Fields[row+2][column].Ship = new Ship(4);
+            mapWithShips.Fields[row+3][column].Ship = new Ship(4);
+            mapWithShips.Fields[row+4][column].Ship = new Ship(4);
+
+            mapRepoMock.SetupGet(c => c.Map).Returns(mapWithShips);
+            var shipService = new ShipService(mapRepoMock.Object);
+            var ship = new Ship(shipLength)
+            {
+                Direction = direction
+            };
+            var result = shipService.PlaceShip(row, column, ship);
+
+            result.Success.Should().BeFalse();
+            result.Error.Should().BeEquivalentTo("There is already ship on provided coordinates");
+        }
+        [TestCase(1, 0, 5, Direction.Left)]
+        [TestCase(2, 9, 4, Direction.Right)]
+        [TestCase(5, 7, 4, Direction.Right)]
+        public void
+            PlaceShip_WHEN_InvokedAndCollisionWithBorderDetected_THEN_ReturnSuccessFalse(int row, int column, int shipLength, Direction direction)
+        {
+            var mapRepoMock = new Mock<IMapRepository>();
+            mapRepoMock.SetupGet(c => c.Map).Returns(new Map(10, 10));
+            var shipService = new ShipService(mapRepoMock.Object);
+            var ship = new Ship(shipLength)
+            {
+                Direction = direction
+            };
+            var result = shipService.PlaceShip(row, column, ship);
+
+            result.Success.Should().BeFalse();
+            result.Error.Should().BeEquivalentTo("Ship cannot exceed map dimensions");
         }
     }
 }

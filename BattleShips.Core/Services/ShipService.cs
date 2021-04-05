@@ -18,13 +18,29 @@ namespace BattleShips.Core.Services
         {
             this.mapRepository = mapRepository;
         }
-        public Ship PlaceShip(int row, int column, int length, Direction direction)
+        public PlacingShipResult PlaceShip(int row, int column, Ship ship)
         {
             throw new NotImplementedException();
         }
-        public Ship RandomlyPlaceShip(int length)
+        public PlacingShipResult RandomlyPlaceShip(int length)
         {
-            throw new NotImplementedException();
+            var ship = new Ship(length);
+            var map = mapRepository.Map;
+            if (map == null)
+            {
+                throw new NullReferenceException("Map cannot be null!");
+            }
+
+            var random = new Random();
+            var result = new PlacingShipResult();
+            while (!result.Success)
+            {
+                var row = random.Next(0, map.Fields.Length - 1);
+                var column = random.Next(0, map.Fields[0].Length - 1);
+                result = PlaceShip(row, column, ship);
+            }
+
+            return result;
         }
     }
 }

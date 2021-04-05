@@ -13,10 +13,10 @@ namespace BattleShips.Core.Abstractions.Models
             }
 
             Fields = new Field[rows][];
-            for (int i = 0; i < rows; i++)
+            for (var i = 0; i < rows; i++)
             {
                 Fields[i] = new Field[columns];
-                for (int j = 0; j < columns; j++)
+                for (var j = 0; j < columns; j++)
                 {
                     Fields[i][j] = new Field();
                 }

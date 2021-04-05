@@ -5,7 +5,7 @@ namespace BattleShips.Core.Abstractions.Services
 {
     public interface IShipService
     {
-        Ship PlaceShip(int row, int column, int length, Direction direction);
-        Ship RandomlyPlaceShip(int length);
+        PlacingShipResult PlaceShip(int row, int column, Ship ship);
+        PlacingShipResult RandomlyPlaceShip(int length);
     }
 }
