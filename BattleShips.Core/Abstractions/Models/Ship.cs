@@ -8,14 +8,12 @@ namespace BattleShips.Core.Abstractions.Models
     {
         public Ship(int length)
         {
-            Id = Guid.NewGuid();
             Length = length;
-            Coordinates = new Coordinates[length];
+            Coordinates = new List<Coordinates>();
         }
-        public Guid Id { get; }
-        public Coordinates[] Coordinates { get; set; }
+        public List<Coordinates> Coordinates { get; }
+        public bool IsDestroyed => Coordinates.Count > 0 && Coordinates.TrueForAll(x => x.IsHit);
+        public int Length { get; }
         public Direction Direction { get; set; }
-        public bool IsDestroyed { get; set; }
-        public int Length { get;  }
     }
 }

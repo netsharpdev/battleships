@@ -27,8 +27,8 @@ namespace BattleShips.Tests.Unit
             var result = shipService.PlaceShip(row, column, ship);
 
             result.Success.Should().BeTrue();
-            result.Error.Should().BeEmpty();
-            result.Ship.Coordinates.Length.Should().Be(shipLength);
+            result.Error.Should().BeNullOrEmpty();
+            result.Ship.Coordinates.Count.Should().Be(shipLength);
             result.Ship.Coordinates.Select(c=>c.Column).Should().AllBeEquivalentTo(column);
             result.Ship.Coordinates.Select(c => c.Row).Should().OnlyHaveUniqueItems();
         }
@@ -47,9 +47,8 @@ namespace BattleShips.Tests.Unit
             };
             var result = shipService.PlaceShip(row, column, ship);
 
-            result.Success.Should().BeTrue();
-            result.Error.Should().BeEmpty();
-            result.Ship.Coordinates.Length.Should().Be(shipLength);
+            result.Error.Should().BeNullOrEmpty();
+            result.Ship.Coordinates.Count.Should().Be(shipLength);
             result.Ship.Coordinates.Select(c => c.Row).Should().AllBeEquivalentTo(row);
             result.Ship.Coordinates.Select(c => c.Column).Should().OnlyHaveUniqueItems();
         }
@@ -72,6 +71,10 @@ namespace BattleShips.Tests.Unit
             mapWithShips.Fields[row+2][column].Ship = new Ship(4);
             mapWithShips.Fields[row+3][column].Ship = new Ship(4);
             mapWithShips.Fields[row+4][column].Ship = new Ship(4);
+
+            mapWithShips.Fields[row-1][column].Ship = new Ship(3);
+            mapWithShips.Fields[row][column].Ship = new Ship(3);
+            mapWithShips.Fields[row+1][column].Ship = new Ship(3);
 
             mapRepoMock.SetupGet(c => c.Map).Returns(mapWithShips);
             var shipService = new ShipService(mapRepoMock.Object);
