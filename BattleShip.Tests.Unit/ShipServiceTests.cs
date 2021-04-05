@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using BattleShips.Core.Abstractions.Enums;
+using BattleShips.Core.Abstractions.Exceptions;
 using BattleShips.Core.Abstractions.Models;
 using BattleShips.Core.Abstractions.Repositories;
 using BattleShips.Core.Services;
@@ -72,9 +74,10 @@ namespace BattleShips.Tests.Unit
             mapWithShips.Fields[row+3][column].Ship = new Ship(4);
             mapWithShips.Fields[row+4][column].Ship = new Ship(4);
 
-            mapWithShips.Fields[row-1][column].Ship = new Ship(3);
-            mapWithShips.Fields[row][column].Ship = new Ship(3);
-            mapWithShips.Fields[row+1][column].Ship = new Ship(3);
+            mapWithShips.Fields[row-1][column-1].Ship = new Ship(4);
+            mapWithShips.Fields[row][column-1].Ship = new Ship(4);
+            mapWithShips.Fields[row+1][column-1].Ship = new Ship(4);
+            mapWithShips.Fields[row+2][column-1].Ship = new Ship(4);
 
             mapRepoMock.SetupGet(c => c.Map).Returns(mapWithShips);
             var shipService = new ShipService(mapRepoMock.Object);
@@ -131,6 +134,26 @@ namespace BattleShips.Tests.Unit
             result.Success.Should().BeTrue();
             result.Ship.Should().NotBeNull();
             result.Ship.Coordinates.Count.Should().Be(length);
+        }
+        [Test]
+        public void RandomlyPlaceShip_WHEN_InvokedAndNoMapFound_THEN_ThrowsMapNotInitializedException()
+        {
+            var mapRepoMock = new Mock<IMapRepository>();
+            mapRepoMock.SetupGet(c => c.Map).Returns((Map)null);
+            var shipService = new ShipService(mapRepoMock.Object);
+
+            var act = new Func<PlacingShipResult>(() => shipService.RandomlyPlaceShip(4));
+            act.Should().ThrowExactly<MapNotInitializedException>();
+        }
+        [Test]
+        public void PlaceShip_WHEN_InvokedAndNoMapFound_THEN_ThrowsMapNotInitializedException()
+        {
+            var mapRepoMock = new Mock<IMapRepository>();
+            mapRepoMock.SetupGet(c => c.Map).Returns((Map)null);
+            var shipService = new ShipService(mapRepoMock.Object);
+
+            var act = new Func<PlacingShipResult>(() => shipService.PlaceShip(4,0, new Ship(4)));
+            act.Should().ThrowExactly<MapNotInitializedException>();
         }
     }
 }

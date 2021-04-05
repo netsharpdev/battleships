@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BattleShips.Core.Abstractions.Models;
-using BattleShips.Core.Utilities;
+using BattleShips.Utilities;
 
 namespace BattleShips.Services
 {

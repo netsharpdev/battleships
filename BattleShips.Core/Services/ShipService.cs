@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BattleShips.Core.Abstractions.Enums;
+using BattleShips.Core.Abstractions.Exceptions;
 using BattleShips.Core.Abstractions.Models;
 using BattleShips.Core.Abstractions.Repositories;
 using BattleShips.Core.Abstractions.Services;
@@ -22,7 +23,10 @@ namespace BattleShips.Core.Services
         public PlacingShipResult PlaceShip(int row, int column, Ship ship)
         {
             var map = mapRepository.Map;
-
+            if (map == null)
+            {
+                throw new MapNotInitializedException();
+            }
             var result = ValidateInput(row, column, ship, map);
             if (!result.Success)
             {
@@ -30,7 +34,7 @@ namespace BattleShips.Core.Services
             }
 
             result.Ship = ship;
-            //calculate fields
+
             if (ship.Direction == Direction.Bottom)
             {
                 for (var i = row; i < row + result.Ship.Length; i++)
@@ -39,11 +43,11 @@ namespace BattleShips.Core.Services
                     {
                         return PlacingShipResult.WithError(FieldAlreadyOccupiedError);
                     }
-                    result.Ship.Coordinates.Add(new Coordinates(i, column));
-                    map.Fields[i][column].Ship = result.Ship;
+
+                    AssignShip(i, column, result.Ship, map);
                 }
             }
-            if (result.Ship.Direction == Direction.Top)
+            else if (result.Ship.Direction == Direction.Top)
             {
                 for (var i = row; i > row - result.Ship.Length; i--)
                 {
@@ -51,11 +55,11 @@ namespace BattleShips.Core.Services
                     {
                         return PlacingShipResult.WithError(FieldAlreadyOccupiedError);
                     }
-                    result.Ship.Coordinates.Add(new Coordinates(i, column));
-                    map.Fields[i][column].Ship = result.Ship;
+
+                    AssignShip(i, column, result.Ship, map);
                 }
             }
-            if (result.Ship.Direction == Direction.Right)
+            else if (result.Ship.Direction == Direction.Right)
             {
                 var mapRow = map.Fields[row];
                 for (var i = column; i < column + result.Ship.Length; i++)
@@ -64,11 +68,11 @@ namespace BattleShips.Core.Services
                     {
                         return PlacingShipResult.WithError(FieldAlreadyOccupiedError);
                     }
-                    result.Ship.Coordinates.Add(new Coordinates(row, i));
-                    map.Fields[row][i].Ship = result.Ship;
+
+                    AssignShip(row, i, result.Ship, map);
                 }
             }
-            if (result.Ship.Direction == Direction.Left)
+            else if (result.Ship.Direction == Direction.Left)
             {
                 var mapRow = map.Fields[row];
                 for (var i = column; i > column - result.Ship.Length; i--)
@@ -77,13 +81,20 @@ namespace BattleShips.Core.Services
                     {
                         return PlacingShipResult.WithError(FieldAlreadyOccupiedError);
                     }
-                    result.Ship.Coordinates.Add(new Coordinates(row, i));
-                    map.Fields[row][i].Ship = result.Ship;
+
+                    AssignShip(row, i, result.Ship, map);
                 }
             }
 
+            mapRepository.SaveMap(map);
             return result;
 
+        }
+
+        private static void AssignShip(int row, int column, Ship ship, Map map)
+        {
+            ship.Coordinates.Add(new Coordinates(row, column));
+            map.Fields[row][column].Ship = ship;
         }
 
         private static PlacingShipResult ValidateInput(int row, int column, Ship ship, Map map)
@@ -125,13 +136,13 @@ namespace BattleShips.Core.Services
 
         public PlacingShipResult RandomlyPlaceShip(int length)
         {
-            var ship = new Ship(length);
             var map = mapRepository.Map;
             if (map == null)
             {
-                throw new NullReferenceException("Map cannot be null!");
+                throw new MapNotInitializedException();
             }
 
+            var ship = new Ship(length);
             var random = new Random();
             var result = new PlacingShipResult();
             while (result.Ship == null)

@@ -19,6 +19,7 @@ namespace BattleShips
             var serviceCollection = new ServiceCollection();
 
             serviceCollection.AddSingleton<IMapRepository, InMemoryMapRepository>();
+            serviceCollection.AddSingleton<IScoreRepository, InMemoryScoreRepository>();
             serviceCollection.AddScoped<IBattleService, BattleService>();
             serviceCollection.AddScoped<IMapService, MapService>();
             serviceCollection.AddScoped<IShipService, ShipService>();

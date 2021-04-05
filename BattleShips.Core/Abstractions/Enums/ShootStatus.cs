@@ -4,6 +4,7 @@
     {
         Missed,
         Hit,
-        Destroyed
+        Destroyed,
+        AlreadyShoot
     }
 }

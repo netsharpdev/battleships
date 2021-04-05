@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using BattleShips.Core.Abstractions.Models;
 using BattleShips.Core.Abstractions.Repositories;
 using BattleShips.Core.Abstractions.Services;
-using BattleShips.Core.Utilities;
 
 namespace BattleShips.Core.Services
 {

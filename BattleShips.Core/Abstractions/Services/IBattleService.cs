@@ -6,6 +6,7 @@ namespace BattleShips.Core.Abstractions.Services
 {
     public interface IBattleService
     {
-        ShootStatus Shoot(int row, string column);
+        ShootResult Shoot(int row, int column);
+        Score GetScore();
     }
 }
