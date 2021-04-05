@@ -8,12 +8,12 @@ using BattleShips.Core.Abstractions.Repositories;
 
 namespace BattleShips.Core.Repositories
 {
-    public class InMemoryScoreRepository : IScoreRepository
+    public class InMemoryScoreRepository : IRepository<Score>
     {
-        public Score Score { get; private set; }
-        public void SaveScore(Score score)
+        public Score Entity { get; private set; }
+        public void Save(Score score)
         {
-            Score = score;
+            Entity = score;
         }
     }
 }

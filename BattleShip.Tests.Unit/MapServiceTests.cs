@@ -57,6 +57,5 @@ namespace BattleShips.Tests.Unit
             action.Should().ThrowExactly<ArgumentOutOfRangeException>();
         }
 
-
     }
 }

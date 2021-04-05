@@ -11,17 +11,17 @@ namespace BattleShips.Core.Services
 {
     public class MapService : IMapService
     {
-        private readonly IMapRepository mapRepository;
+        private readonly IRepository<Map> mapRepository;
 
-        public MapService(IMapRepository mapRepository)
+        public MapService(IRepository<Map> mapRepository)
         {
             this.mapRepository = mapRepository;
         }
         public Map CreateMap(int rows, int columns)
         {
             var map =  new Map(rows, columns);
-            mapRepository.SaveMap(map);
-            return mapRepository.Map;
+            mapRepository.Save(map);
+            return mapRepository.Entity;
         }
 
       

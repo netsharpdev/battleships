@@ -13,16 +13,16 @@ namespace BattleShips.Core.Services
 {
     public class ShipService : IShipService
     {
-        private readonly IMapRepository mapRepository;
+        private readonly IRepository<Map> mapRepository;
         private const string FieldAlreadyOccupiedError = "There is already ship on provided coordinates";
         private const string ShipOutOfDimensionsError = "Ship cannot exceed map dimensions";
-        public ShipService(IMapRepository mapRepository)
+        public ShipService(IRepository<Map> mapRepository)
         {
             this.mapRepository = mapRepository;
         }
         public PlacingShipResult PlaceShip(int row, int column, Ship ship)
         {
-            var map = mapRepository.Map;
+            var map = mapRepository.Entity;
             if (map == null)
             {
                 throw new MapNotInitializedException();
@@ -86,7 +86,7 @@ namespace BattleShips.Core.Services
                 }
             }
 
-            mapRepository.SaveMap(map);
+            mapRepository.Save(map);
             return result;
 
         }
@@ -136,7 +136,7 @@ namespace BattleShips.Core.Services
 
         public PlacingShipResult RandomlyPlaceShip(int length)
         {
-            var map = mapRepository.Map;
+            var map = mapRepository.Entity;
             if (map == null)
             {
                 throw new MapNotInitializedException();

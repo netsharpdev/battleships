@@ -8,13 +8,13 @@ using BattleShips.Core.Abstractions.Repositories;
 
 namespace BattleShips.Core.Repositories
 {
-    public class InMemoryMapRepository : IMapRepository
+    public class InMemoryMapRepository : IRepository<Map>
     {
-        public Map Map { get; private set; }
+        public Map Entity { get; private set; }
 
-        public void SaveMap(Map map)
+        public void Save(Map map)
         {
-            Map = map;
+            Entity = map;
         }
     }
 }

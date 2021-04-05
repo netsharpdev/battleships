@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BattleShips.Core.Abstractions.Repositories;
 using BattleShips.Core.Abstractions.Services;
+using BattleShips.Core.IoC;
 using BattleShips.Core.Repositories;
 using BattleShips.Core.Services;
 using BattleShips.Services;
@@ -17,13 +18,9 @@ namespace BattleShips
         public static IServiceCollection RegisterServices()
         {
             var serviceCollection = new ServiceCollection();
-
-            serviceCollection.AddSingleton<IMapRepository, InMemoryMapRepository>();
-            serviceCollection.AddSingleton<IScoreRepository, InMemoryScoreRepository>();
-            serviceCollection.AddScoped<IBattleService, BattleService>();
-            serviceCollection.AddScoped<IMapService, MapService>();
-            serviceCollection.AddScoped<IShipService, ShipService>();
+            serviceCollection.RegisterCoreServices();
             serviceCollection.AddScoped<IDrawService, DrawService>();
+            serviceCollection.AddScoped<IBattleShipGameService, BattleShipGameService>();
             return serviceCollection;
         }
     }

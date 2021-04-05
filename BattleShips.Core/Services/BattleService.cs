@@ -13,17 +13,17 @@ namespace BattleShips.Core.Services
 {
     public class BattleService : IBattleService
     {
-        private readonly IMapRepository mapRepository;
-        private readonly IScoreRepository scoreRepository;
+        private readonly IRepository<Map> mapRepository;
+        private readonly IRepository<Score> scoreRepository;
 
-        public BattleService(IMapRepository mapRepository, IScoreRepository scoreRepository)
+        public BattleService(IRepository<Map> mapRepository, IRepository<Score> scoreRepository)
         {
             this.mapRepository = mapRepository;
             this.scoreRepository = scoreRepository;
         }
         public ShootResult Shoot(int row, int column)
         {
-            var map = mapRepository.Map;
+            var map = mapRepository.Entity;
             if (map == null)
             {
                 throw new MapNotInitializedException();
@@ -59,21 +59,22 @@ namespace BattleShips.Core.Services
             }
             else
             {
+                currentScore.Misses++;
                 result.LastShootStatus = ShootStatus.Missed;
             }
-            mapRepository.SaveMap(map);
-            scoreRepository.SaveScore(currentScore);
+            mapRepository.Save(map);
+            scoreRepository.Save(currentScore);
             return result;
 
         }
 
         public Score GetScore()
         {
-            var score = scoreRepository.Score;
+            var score = scoreRepository.Entity;
             if (score == null)
             {
                 score = new Score();
-                scoreRepository.SaveScore(score);
+                scoreRepository.Save(score);
             }
 
             return score;

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using BattleShips.Core.Abstractions.Models;
 using BattleShips.Utilities;
 
@@ -12,7 +9,7 @@ namespace BattleShips.Services
     {
         public string DrawMap(Map map)
         {
-            if (map == null || map.Fields == null)
+            if (map?.Fields == null)
             {
                 throw new ArgumentNullException();
             }
@@ -30,7 +27,9 @@ namespace BattleShips.Services
         private static void DrawRow(Field[][] fields, int row, StringBuilder stringBuilder)
         {
             var rowBuilder = new StringBuilder();
-            rowBuilder.Append(row + 1 + row > 9 ? string.Empty : "_");
+            rowBuilder.Append(row + 1);
+            rowBuilder.Append(row + 1 > 9 ? string.Empty : "_");
+            AppendEmptySpaceAtTheEnd(rowBuilder);
             for (int column = 0; column < fields[row].Length; column++)
             {
                 DrawColumnContent(fields[row][column], rowBuilder);
@@ -49,18 +48,25 @@ namespace BattleShips.Services
             {
                 rowBuilder.Append("+");
             }
+            AppendEmptySpaceAtTheEnd(rowBuilder);
         }
 
         private string DrawColumnNames(int columns)
         {
             var stringBuilder = new StringBuilder();
-            stringBuilder.Append("__");
+            stringBuilder.Append("__ ");
             for (int i = 0; i < columns; i++)
             {
                 stringBuilder.Append(ColumnUtility.GetColumnLetter(i));
+                AppendEmptySpaceAtTheEnd(stringBuilder);
             }
 
             return stringBuilder.ToString();
         }
+        private static void AppendEmptySpaceAtTheEnd(StringBuilder builder)
+        {
+            builder.Append(" ");
+        }
+
     }
 }

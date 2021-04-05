@@ -19,8 +19,8 @@ namespace BattleShips.Tests.Unit
         public void
             PlaceShip_WHEN_InvokedWithTopOrBottomDirection_THEN_ReturnShipWithFieldsNextToEachOtherInSameColumn(int row, int column, int shipLength, Direction direction)
         {
-            var mapRepoMock = new Mock<IMapRepository>();
-            mapRepoMock.SetupGet(c => c.Map).Returns(new Map(10, 10));
+            var mapRepoMock = new Mock<IRepository<Map>>();
+            mapRepoMock.SetupGet(c => c.Entity).Returns(new Map(10, 10));
             var shipService = new ShipService(mapRepoMock.Object);
             var ship = new Ship(shipLength)
             {
@@ -40,8 +40,8 @@ namespace BattleShips.Tests.Unit
         public void
             PlaceShip_WHEN_InvokedWithLeftOrRightDirection_THEN_ReturnShipWithFieldsNextToEachOtherInSameRow(int row, int column, int shipLength, Direction direction)
         {
-            var mapRepoMock = new Mock<IMapRepository>();
-            mapRepoMock.SetupGet(c => c.Map).Returns(new Map(10, 10));
+            var mapRepoMock = new Mock<IRepository<Map>>();
+            mapRepoMock.SetupGet(c => c.Entity).Returns(new Map(10, 10));
             var shipService = new ShipService(mapRepoMock.Object);
             var ship = new Ship(shipLength)
             {
@@ -57,11 +57,11 @@ namespace BattleShips.Tests.Unit
         [TestCase(1, 5, 5, Direction.Left)]
         [TestCase(2, 4, 4, Direction.Right)]
         [TestCase(5, 4, 4, Direction.Top)]
-        [TestCase(3, 4, 4, Direction.Bottom)]
+        [TestCase(3, 2, 4, Direction.Bottom)]
         public void
             PlaceShip_WHEN_InvokedAndCollisionWithShipDetected_THEN_ReturnSuccessFalse(int row, int column, int shipLength, Direction direction)
         {
-            var mapRepoMock = new Mock<IMapRepository>();
+            var mapRepoMock = new Mock<IRepository<Map>>();
             var mapWithShips = new Map(10, 10);
 
             mapWithShips.Fields[row][column+1].Ship = new Ship(4);
@@ -69,17 +69,17 @@ namespace BattleShips.Tests.Unit
             mapWithShips.Fields[row][column+3].Ship = new Ship(4);
             mapWithShips.Fields[row][column+4].Ship = new Ship(4);
 
+            mapWithShips.Fields[row-1][column].Ship = new Ship(4);
+            mapWithShips.Fields[row][column].Ship = new Ship(4);
             mapWithShips.Fields[row+1][column].Ship = new Ship(4);
             mapWithShips.Fields[row+2][column].Ship = new Ship(4);
-            mapWithShips.Fields[row+3][column].Ship = new Ship(4);
-            mapWithShips.Fields[row+4][column].Ship = new Ship(4);
 
             mapWithShips.Fields[row-1][column-1].Ship = new Ship(4);
             mapWithShips.Fields[row][column-1].Ship = new Ship(4);
             mapWithShips.Fields[row+1][column-1].Ship = new Ship(4);
             mapWithShips.Fields[row+2][column-1].Ship = new Ship(4);
 
-            mapRepoMock.SetupGet(c => c.Map).Returns(mapWithShips);
+            mapRepoMock.SetupGet(c => c.Entity).Returns(mapWithShips);
             var shipService = new ShipService(mapRepoMock.Object);
             var ship = new Ship(shipLength)
             {
@@ -96,8 +96,8 @@ namespace BattleShips.Tests.Unit
         public void
             PlaceShip_WHEN_InvokedAndCollisionWithBorderDetected_THEN_ReturnSuccessFalse(int row, int column, int shipLength, Direction direction)
         {
-            var mapRepoMock = new Mock<IMapRepository>();
-            mapRepoMock.SetupGet(c => c.Map).Returns(new Map(10, 10));
+            var mapRepoMock = new Mock<IRepository<Map>>();
+            mapRepoMock.SetupGet(c => c.Entity).Returns(new Map(10, 10));
             var shipService = new ShipService(mapRepoMock.Object);
             var ship = new Ship(shipLength)
             {
@@ -114,7 +114,7 @@ namespace BattleShips.Tests.Unit
         public void
             RandomlyPlaceShip_WHEN_Invoked_THEN_ReturnRandomlyPlacedShip(int length)
         {
-            var mapRepoMock = new Mock<IMapRepository>();
+            var mapRepoMock = new Mock<IRepository<Map>>();
             var mapWithShips = new Map(10, 10);
 
             mapWithShips.Fields[0][1].Ship = new Ship(4);
@@ -127,7 +127,7 @@ namespace BattleShips.Tests.Unit
             mapWithShips.Fields[2][0].Ship = new Ship(4);
             mapWithShips.Fields[3][0].Ship = new Ship(4);
 
-            mapRepoMock.SetupGet(c => c.Map).Returns(new Map(10, 10));
+            mapRepoMock.SetupGet(c => c.Entity).Returns(new Map(10, 10));
             var shipService = new ShipService(mapRepoMock.Object);
             var result = shipService.RandomlyPlaceShip(length);
 
@@ -138,8 +138,8 @@ namespace BattleShips.Tests.Unit
         [Test]
         public void RandomlyPlaceShip_WHEN_InvokedAndNoMapFound_THEN_ThrowsMapNotInitializedException()
         {
-            var mapRepoMock = new Mock<IMapRepository>();
-            mapRepoMock.SetupGet(c => c.Map).Returns((Map)null);
+            var mapRepoMock = new Mock<IRepository<Map>>();
+            mapRepoMock.SetupGet(c => c.Entity).Returns((Map)null);
             var shipService = new ShipService(mapRepoMock.Object);
 
             var act = new Func<PlacingShipResult>(() => shipService.RandomlyPlaceShip(4));
@@ -148,8 +148,8 @@ namespace BattleShips.Tests.Unit
         [Test]
         public void PlaceShip_WHEN_InvokedAndNoMapFound_THEN_ThrowsMapNotInitializedException()
         {
-            var mapRepoMock = new Mock<IMapRepository>();
-            mapRepoMock.SetupGet(c => c.Map).Returns((Map)null);
+            var mapRepoMock = new Mock<IRepository<Map>>();
+            mapRepoMock.SetupGet(c => c.Entity).Returns((Map)null);
             var shipService = new ShipService(mapRepoMock.Object);
 
             var act = new Func<PlacingShipResult>(() => shipService.PlaceShip(4,0, new Ship(4)));
