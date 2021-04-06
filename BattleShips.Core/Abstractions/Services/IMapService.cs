@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using BattleShips.Core.Abstractions.Models;
+﻿using BattleShips.Core.Abstractions.Models;
 
 namespace BattleShips.Core.Abstractions.Services
 {

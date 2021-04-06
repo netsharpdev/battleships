@@ -1,5 +1,4 @@
-﻿using System;
-using BattleShips.Services;
+﻿using BattleShips.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BattleShips

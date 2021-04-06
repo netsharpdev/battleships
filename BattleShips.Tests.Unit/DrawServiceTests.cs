@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BattleShips.Core.Abstractions.Models;
-using BattleShips.Core.Abstractions.Services;
-using BattleShips.Core.Services;
 using BattleShips.Services;
 using FluentAssertions;
 using NUnit.Framework;

@@ -1,5 +1,4 @@
-﻿using BattleShips.Core.Abstractions.Enums;
-using BattleShips.Core.Abstractions.Models;
+﻿using BattleShips.Core.Abstractions.Models;
 
 namespace BattleShips.Core.Abstractions.Services
 {
