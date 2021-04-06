@@ -6,9 +6,9 @@ namespace BattleShips.Utilities
 {
     public static class ColumnUtility
     {
-        private static Dictionary<string, int> columnNumberMapping = new Dictionary<string, int>();
+        private static readonly Dictionary<string, int> columnNumberMapping = new Dictionary<string, int>();
 
-        private static IReadOnlyList<string> availableLetters = new []
+        private static readonly IReadOnlyList<string> availableLetters = new []
             {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
         static ColumnUtility()
         {
